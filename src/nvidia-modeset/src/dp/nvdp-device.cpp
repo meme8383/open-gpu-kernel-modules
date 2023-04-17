@@ -116,8 +116,8 @@ void nvDPGetDpyGUID(NVDpyEvoPtr pDpyEvo)
     }
 
     pDpyEvo->dp.guid.valid =
-        nvkmsDisplayPort::nvDPGetDeviceGUID(pDpLibDevice->device,
-                                        pDpyEvo->dp.guid.buffer) == true;
+        !!nvkmsDisplayPort::nvDPGetDeviceGUID(pDpLibDevice->device,
+                                        pDpyEvo->dp.guid.buffer);
     if (!pDpyEvo->dp.guid.valid) {
         return;
     }

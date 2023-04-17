@@ -195,7 +195,7 @@ bool DeviceImpl::isPendingZombie()
     if (isZombie() && !shadow.zombie)
         return true;
     else if (!isZombie() && shadow.zombie && plugged)
-        return (connector->policyModesetOrderMitigation ? false : true);
+        return !connector->policyModesetOrderMitigation;
     return false;
 }
 
@@ -1173,8 +1173,7 @@ void DeviceImpl::setPanelPowerParams(bool bSinkPowerStateD0, bool bPanelPowerSta
     }
     else
     {
-        bDPCDPowerStateD0 = (connector->hal->getPowerState() == PowerStateD0)?
-                            true : false;
+        bDPCDPowerStateD0 = (connector->hal->getPowerState() == PowerStateD0);
     }
 
     // Going to Suspend (D3)
@@ -2398,7 +2397,7 @@ static AuxBus::status _QueryCrcSink
 AuxBus::status DeviceImpl::dscCrcControl(NvBool bEnable, gpuDscCrc *gpuData, sinkDscCrc *sinkData)
 {
     // GPU part
-    if (this->connector->main->dscCrcTransaction(bEnable, gpuData, (NvU16*) &(activeGroup->headIndex)) != true)
+    if (!this->connector->main->dscCrcTransaction(bEnable, gpuData, (NvU16 *) &(activeGroup->headIndex)))
     {
         return AuxBus::nack;
     }

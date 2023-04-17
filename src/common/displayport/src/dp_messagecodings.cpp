@@ -66,7 +66,7 @@ ParseResponseStatus LinkAddressMessage::parseResponseAck(EncodedMessage * messag
         reply.res[i].hasMessaging   = !!reader->readOrDefault(1 /*Messaging_Capability_Status*/, 0x1);
         reply.res[i].dpPlugged      = !!reader->readOrDefault(1 /*DisplayPort_Device_Plug_Status*/, 0x1);
 
-        if (reply.res[i].isInputPort == false)
+        if (!reply.res[i].isInputPort)
         {
             reply.res[i].legacyPlugged  = !!reader->readOrDefault(1 /*Legacy_Device_Plug_Status*/, 0x1);
 
@@ -229,7 +229,7 @@ ParseResponseStatus EnumPathResMessage::parseResponseAck(EncodedMessage * messag
 {
     reply.portNumber        = reader->readOrDefault(4 /*Port_Number*/, 0xF);
     reply.availableStreams  = reader->readOrDefault(3 /*Available_Streams*/, 0);
-    reply.bFECCapability    = (reader->readOrDefault(1 /*FEC*/, 0x0) == 1) ? true : false;
+    reply.bFECCapability    = (reader->readOrDefault(1 /*FEC*/, 0x0) == 1);
     reply.TotalPBN          = reader->readOrDefault(16 /*PBN*/, 0xFFFF);
     reply.FreePBN           = reader->readOrDefault(16 /*PBN*/, 0xFFFF);
 

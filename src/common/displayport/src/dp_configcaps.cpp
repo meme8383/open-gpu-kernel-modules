@@ -370,7 +370,7 @@ struct DPCDHALImpl : DPCDHAL
 
         bIndexedLinkrateCapable = false;
 
-        if (isAtLeastVersion(1,4) && caps.extendedRxCapsPresent == false)
+        if (isAtLeastVersion(1,4) && !caps.extendedRxCapsPresent)
         {
             DP_ASSERT(0 && "A DPRX with DPCD Rev. 1.4 (or higher) must have Extended Receiver Capability field.");
         }
@@ -1345,7 +1345,7 @@ struct DPCDHALImpl : DPCDHAL
             return AuxRetry::nack;
         }
 
-        if (this->isVersion(1, 1) == true)
+        if (this->isVersion(1, 1))
         {
             NvU8 buffer = 0;
             if (AuxRetry::ack != bus.read(NV_DPCD_TRAINING_PATTERN_SET, &buffer, 1))
@@ -1358,7 +1358,7 @@ struct DPCDHALImpl : DPCDHAL
             NvU8 value = ((linkQualPattern << 2) & 0xc) | (buffer & (~0xc));
             return bus.write(NV_DPCD_TRAINING_PATTERN_SET, &value, sizeof value);
         }
-        else if (isAtLeastVersion(1,2) == true)
+        else if (isAtLeastVersion(1, 2))
         {
             AuxRetry::status requestStatus = AuxRetry::nack ;
 
@@ -1387,7 +1387,7 @@ struct DPCDHALImpl : DPCDHAL
         if (caps.revisionMajor <= 0)
             DP_ASSERT(0 && "Something is wrong, revision major should be > 0");
 
-        if (isAtLeastVersion(1,2) == false)
+        if (!isAtLeastVersion(1, 2))
         {
             DP_ASSERT(0 && "Regs only supported for DP1.2");
             return AuxRetry::unsupportedRegister;
@@ -2913,7 +2913,7 @@ struct DPCDHALImpl : DPCDHAL
         loopCount = NV_PCON_FRL_LT_TIMEOUT_THRESHOLD;
         do
         {
-            if (checkPCONFrlLinkStatus(&frlRate) == true)
+            if (checkPCONFrlLinkStatus(&frlRate))
             {
                 break;
             }

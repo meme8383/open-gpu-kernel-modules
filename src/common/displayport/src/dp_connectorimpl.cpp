@@ -2864,7 +2864,7 @@ void ConnectorImpl::notifyAttachEnd(bool modesetCancelled)
     //
     HDCPState hdcpState = {0};
     main->configureHDCPGetHDCPState(hdcpState);
-    if ((!hdcpState.HDCP_State_Authenticated) && (isHDCPAuthOn == true)
+    if ((!hdcpState.HDCP_State_Authenticated) && isHDCPAuthOn
         && (currentModesetDeviceGroup->hdcpEnabled))
     {
         if (!this->linkUseMultistream())
@@ -3073,7 +3073,7 @@ bool ConnectorImpl::trainPCONFrlLink(PCONLinkControl *pconControl)
         //           Get FRL Ready Bit (0x303B Bit 1)
         //
         hal->checkPCONFrlReady(&bFrlReady);
-        if (bFrlReady == true)
+        if (bFrlReady)
         {
             break;
         }
@@ -3082,7 +3082,7 @@ bool ConnectorImpl::trainPCONFrlLink(PCONLinkControl *pconControl)
         continue;
     } while (--loopCount);
 
-    if (bFrlReady == false)
+    if (!bFrlReady)
     {
         pconControl->result.status = NV_DP_PCON_CONTROL_STATUS_ERROR_TIMEOUT;
         return false;
@@ -3097,7 +3097,7 @@ bool ConnectorImpl::trainPCONFrlLink(PCONLinkControl *pconControl)
     result = hal->setupPCONFrlLinkAssessment(pconControl->frlHdmiBwMask,
                                              pconControl->flags.bExtendedLTMode,
                                              pconControl->flags.bConcurrentMode);
-    if (result == false)
+    if (!result)
     {
         pconControl->result.status = NV_DP_PCON_CONTROL_STATUS_ERROR_GENERIC;
         return false;
@@ -3108,7 +3108,7 @@ bool ConnectorImpl::trainPCONFrlLink(PCONLinkControl *pconControl)
     do
     {
         result = hal->checkPCONFrlLinkStatus(&frlRateMask);
-        if (result == true)
+        if (result)
         {
             break;
         }
@@ -3117,7 +3117,7 @@ bool ConnectorImpl::trainPCONFrlLink(PCONLinkControl *pconControl)
         continue;
     } while (--loopCount);
 
-    if (result == true)
+    if (result)
     {
         //
         // frlRateMask is result from checkPCONFrlLinkStatus (0x3036) Bit 1~6.
@@ -3147,7 +3147,7 @@ bool ConnectorImpl::assessPCONLinkCapability(PCONLinkControl *pConControl)
 
     if (pConControl->flags.bSourceControlMode)
     {
-        if (trainPCONFrlLink(pConControl) == false)
+        if (!trainPCONFrlLink(pConControl))
         {
             // restore Autonomous mode and treat this as an active DP dongle.
             hal->resetProtocolConverter();
@@ -6382,7 +6382,7 @@ bool ConnectorImpl::resetPreferredLinkConfig(bool force)
 
 bool ConnectorImpl::isAcpiInitDone()
 {
-    return (hal->getSupportsMultistream() ? false : bAcpiInitDone);
+    return !hal->getSupportsMultistream() && bAcpiInitDone;
 }
 
 void ConnectorImpl::notifyAcpiInitDone()

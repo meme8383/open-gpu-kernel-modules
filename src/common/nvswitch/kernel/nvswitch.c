@@ -4238,7 +4238,7 @@ nvswitch_lib_smbpbi_log_sxid
     msglen = nvswitch_os_vsnprintf(string, sizeof(string), pFormat, arglist);
     va_end(arglist);
 
-    if (!(msglen < 0))
+    if (msglen >= 0)
     {
         //
         // HALs will know that the string is being truncated by seeing that the

@@ -1420,7 +1420,7 @@ knvlinkFloorSweep_IMPL
     // Assert that the number of links in active is always less then
     // or equal to the number of active links on the chips
     //
-    if(!(nvPopCount32(tmpEnabledLinkMask) <= *pNumActiveLinksPerIoctrl * nvPopCount32(pKernelNvlink->ioctrlMask)))
+    if(nvPopCount32(tmpEnabledLinkMask) > *pNumActiveLinksPerIoctrl * nvPopCount32(pKernelNvlink->ioctrlMask))
     {
         NV_PRINTF(LEVEL_INFO,
               "Floorsweeping didn't work! enabledMaskCount: 0x%x and numActiveLinksTotal: 0x%x. Current link info cached in SW: discoveredLinks: 0x%x; enabledLinks:0x%x; disconnectedLinks:0x%x; initDisabledLinksMask:0x%x\n",

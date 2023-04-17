@@ -2089,7 +2089,7 @@ dmaInit_GM107(OBJGPU *pGpu, VirtMemAllocator *pDma)
             NV_REG_STR_RM_OPTIMIZE_COMPUTE_OR_SPARSE_TEX_DEFAULT;
     }
 
-    pDHPI->vasReverse = !(!pDHPI->vasReverse);
+    pDHPI->vasReverse = !!pDHPI->vasReverse;
 
     pDHPI->compTagLineMultiplier = 1;
 

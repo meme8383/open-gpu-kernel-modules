@@ -3957,7 +3957,7 @@ static NV_STATUS storePcieGetConfigSpaceBaseFromMcfgTable(OBJOS *pOS, OBJCL *pCl
         // Fix up Bad System Bioses -- See Bug 715753
         EndBusNumber = (NvU8)pMcfgAddressAllocationStructure->EndBusNumber;
 
-        if (!((NvU8)pMcfgAddressAllocationStructure->StartBusNumber < EndBusNumber))
+        if ((NvU8) pMcfgAddressAllocationStructure->StartBusNumber >= EndBusNumber)
         {
             EndBusNumber = (NvU8)(PCI_MAX_BUSES - 1);
         }

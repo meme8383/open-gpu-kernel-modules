@@ -535,7 +535,7 @@ ParseResponseStatus MessageManager::Message::parseResponse(EncodedMessage * mess
         NakData nakData;
 
         // failure handler will parse the NAK response and do the required action
-        if (DisplayPort::extractGUID(&reader, &nakData.guid) == false)
+        if (!DisplayPort::extractGUID(&reader, &nakData.guid))
         {
             DP_ASSERT(0 && "Invalid GUID in NAK");
         }

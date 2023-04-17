@@ -278,14 +278,14 @@ void EvoMainLink::queryGPUCapability()
 
         _gpuSupportedDpVersions = params.dpVersionsSupported;
 
-        _isStreamCloningEnabled = (params.bIsSCEnabled == NV_TRUE) ? true : false;
-        _hasIncreasedWatermarkLimits     = (params.bHasIncreasedWatermarkLimits == NV_TRUE) ? true : false;
+        _isStreamCloningEnabled = (params.bIsSCEnabled == NV_TRUE);
+        _hasIncreasedWatermarkLimits     = (params.bHasIncreasedWatermarkLimits == NV_TRUE);
 
-        _isFECSupported         = (params.bFECSupported == NV_TRUE) ? true : false;
+        _isFECSupported         = (params.bFECSupported == NV_TRUE);
 
-        _useDfpMaxLinkRateCaps  = (params.bOverrideLinkBw == NV_TRUE) ? true : false;
+        _useDfpMaxLinkRateCaps  = (params.bOverrideLinkBw == NV_TRUE);
 
-        _isLTPhyRepeaterSupported        = (params.bIsTrainPhyRepeater == NV_TRUE) ? true : false;
+        _isLTPhyRepeaterSupported        = (params.bIsTrainPhyRepeater == NV_TRUE);
 
         if (FLD_TEST_DRF(0073, _CTRL_CMD_DP_GET_CAPS, _MAX_LINK_RATE, _1_62, params.maxLinkRate))
             _maxLinkRateSupportedGpu = RBR; //in Hz
@@ -304,7 +304,7 @@ void EvoMainLink::queryGPUCapability()
 
         if (!_isDscDisabledByRegkey)
         {
-            _DSC.isDscSupported = params.DSC.bDscSupported ? true : false;
+            _DSC.isDscSupported = !!params.DSC.bDscSupported;
             _DSC.encoderColorFormatMask = params.DSC.encoderColorFormatMask;
             _DSC.lineBufferSizeKB = params.DSC.lineBufferSizeKB;
             _DSC.rateBufferSizeKB = params.DSC.rateBufferSizeKB;
@@ -1214,7 +1214,7 @@ bool EvoMainLink::train(const LinkConfiguration & link, bool force,
             }
             fallback = true;
         }
-        if (fallback == false)
+        if (!fallback)
         {
             // Nothing to fallback, give up.
             break;

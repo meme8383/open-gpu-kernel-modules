@@ -319,8 +319,7 @@ void DiscoveryManager::BranchDetection::detectCompleted(bool present)
         else
         {
             newDevice.branch = false;
-            newDevice.videoSink = ((child[i].peerDeviceType == Dongle) ?
-                                    child[i].legacyPlugged : true);
+            newDevice.videoSink = child[i].peerDeviceType != Dongle || child[i].legacyPlugged;
         }
 
         //
@@ -891,8 +890,8 @@ void DiscoveryManager::ReceiverSink::handleCSN(MessageManager::MessageReceiver *
 
         // Set the videoSink status of oldDevice again as old device might be a legacy dongle
         // and a video sink is now added with it
-        oldDevice->videoSink = ((csnMessage->getUpRequestData()->peerDeviceType == Dongle) ?
-                                csnMessage->getUpRequestData()->legacyPlugged : true);
+        oldDevice->videoSink = csnMessage->getUpRequestData()->peerDeviceType != Dongle ||
+                               csnMessage->getUpRequestData()->legacyPlugged;
 
         parent->sink->discoveryNewDevice(*oldDevice);
         return;
@@ -908,11 +907,11 @@ void DiscoveryManager::ReceiverSink::handleCSN(MessageManager::MessageReceiver *
 
     DiscoveryManager::Device newDevice;
     newDevice.address = childAddr;
-    newDevice.branch = (csnMessage->getUpRequestData()->messagingCapability == true) &&
+    newDevice.branch = csnMessage->getUpRequestData()->messagingCapability &&
                        (csnMessage->getUpRequestData()->peerDeviceType == DownstreamBranch);
 
     newDevice.peerDevice = csnMessage->getUpRequestData()->peerDeviceType;
-    newDevice.legacy = csnMessage->getUpRequestData()->legacyPlugged == true;
+    newDevice.legacy = csnMessage->getUpRequestData()->legacyPlugged;
     newDevice.SDPStreams = newDevice.SDPStreamSinks = 0;
 
     if (csnMessage->getUpRequestData()->devicePlugged)  // Check for a new device only if it's plugged
@@ -928,8 +927,8 @@ void DiscoveryManager::ReceiverSink::handleCSN(MessageManager::MessageReceiver *
         else
         {
             newDevice.SDPStreams = newDevice.SDPStreamSinks = 1;
-            newDevice.videoSink = ((csnMessage->getUpRequestData()->peerDeviceType == Dongle) ?
-                                    csnMessage->getUpRequestData()->legacyPlugged : true);
+            newDevice.videoSink = csnMessage->getUpRequestData()->peerDeviceType != Dongle ||
+                                  csnMessage->getUpRequestData()->legacyPlugged;
 
             parent->detectSink(newDevice, true);
             return;

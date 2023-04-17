@@ -509,10 +509,7 @@ static inline NvU64 gvaspaceGetVaStart_DISPATCH(struct OBJGVASPACE *pVAS) {
 }
 
 static inline NvU32 gvaspaceGetReservedVaspaceBase(struct OBJGVASPACE *pGVAS, struct OBJGPU *pGpu) {
-    if (!((0) && (pGpu))) {
-        return 1048576;
-    }
-    return 67108864;
+  return 1048576;
 }
 
 void gvaspaceDestruct_IMPL(struct OBJGVASPACE *pGVAS);

@@ -41,12 +41,12 @@ bool VrrEnablement::start()
     if(rc)
     {
         rc = vrrEnableMonitor();
-        if(rc != true)
+        if(!rc)
         {
             return false;
         }
         rc = vrrEnableDriver();
-        if(rc != true)
+        if(!rc)
         {
             return false;
         }
@@ -64,23 +64,23 @@ bool VrrEnablement::start()
 bool VrrEnablement::vrrGetPublicInfo()
 {
     MainLink *main = this->parent->connector->main;
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_INIT_PUBLIC_INFO, NULL) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_INIT_PUBLIC_INFO, NULL))
     {
         return false;
     }
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL))
     {
         return false;
     }
     else
     {
-        if (vrrWaitOnEnableStatus() != true)
+        if (!vrrWaitOnEnableStatus())
         {
            return false;
         }
     }
 
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_GET_PUBLIC_INFO, NULL) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_GET_PUBLIC_INFO, NULL))
     {
         return false;
     }
@@ -95,24 +95,24 @@ bool VrrEnablement::vrrEnableMonitor()
     DP_LOG(("DPHAL_VRR_ENABLE> ** VRR_MON_ENABLE starts **"));
 
     // Always set the enable F/W state m/c to a known state.
-    if(main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL) != true)
+    if(!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL))
     {
         return false;
     }
 
     // Wait for VRR to be 'ready'.
-    if (vrrWaitOnEnableStatus() != true)
+    if (!vrrWaitOnEnableStatus())
     {
        return false;
     }
 
-    if(main->vrrRunEnablementStage(VRR_ENABLE_STAGE_MONITOR_ENABLE_BEGIN, NULL) != true)
+    if(!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_MONITOR_ENABLE_BEGIN, NULL))
     {
         return false;
     }
 
     // Wait for VRR to be 'ready'.
-    if (vrrWaitOnEnableStatus() != true)
+    if (!vrrWaitOnEnableStatus())
     {
        return false;
     }
@@ -120,12 +120,12 @@ bool VrrEnablement::vrrEnableMonitor()
     main->vrrRunEnablementStage(VRR_ENABLE_STAGE_MONITOR_ENABLE_CHALLENGE, NULL);
 
     // Wait for VRR to be ready.
-    if (vrrWaitOnEnableStatus() != true)
+    if (!vrrWaitOnEnableStatus())
     {
        return false;
     }
     // Compare and enable on successful comparison.
-    if(main->vrrRunEnablementStage(VRR_ENABLE_STAGE_MONITOR_ENABLE_CHECK, NULL) == true)
+    if(main->vrrRunEnablementStage(VRR_ENABLE_STAGE_MONITOR_ENABLE_CHECK, NULL))
     {
         this->bMonitorEnabled = true;
     }
@@ -144,18 +144,18 @@ bool VrrEnablement::vrrEnableDriver()
     DP_LOG(("DPHAL_VRR_ENABLE> ** VRR_DRV_ENABLE starts **"));
 
     // Always set the enable F/W state m/c to a known state.
-    if(main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL) != true)
+    if(!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_RESET_MONITOR, NULL))
     {
         return false;
     }
 
     // Wait for VRR to be 'ready'.
-    if (vrrWaitOnEnableStatus() != true)
+    if (!vrrWaitOnEnableStatus())
     {
        return false;
     }
 
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_BEGIN, &enableResult) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_BEGIN, &enableResult))
     {
         return false;
     }
@@ -163,7 +163,7 @@ bool VrrEnablement::vrrEnableDriver()
     if (enableResult == NV0073_CTRL_DP_CMD_ENABLE_VRR_STATUS_PENDING)
     {
         // Wait for VRR to be ready.
-        if (vrrWaitOnEnableStatus() != true)
+        if (!vrrWaitOnEnableStatus())
         {
            return false;
         }
@@ -173,18 +173,18 @@ bool VrrEnablement::vrrEnableDriver()
         return true;
     }
 
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_CHALLENGE, NULL) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_CHALLENGE, NULL))
     {
         return false;
     }
 
     // Wait for VRR to be 'ready'.
-    if (vrrWaitOnEnableStatus() != true)
+    if (!vrrWaitOnEnableStatus())
     {
        return false;
     }
 
-    if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_CHECK, NULL) != true)
+    if (!main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_CHECK, NULL))
     {
         return false;
     }
@@ -203,17 +203,13 @@ bool VrrEnablement::vrrWaitOnEnableStatus(void)
     ConnectorImpl *connector = this->parent->connector;
     do
     {
-        if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_STATUS_CHECK, &enableResult) == true)
+        if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_STATUS_CHECK, &enableResult))
         {
             return true;
         }
         else
         {
-            if (enableResult == NV0073_CTRL_DP_CMD_ENABLE_VRR_STATUS_READ_ERROR)
-            {
-                return false;
-            }
-            else if (enableResult == NV0073_CTRL_DP_CMD_ENABLE_VRR_STATUS_PENDING)
+            if (enableResult == NV0073_CTRL_DP_CMD_ENABLE_VRR_STATUS_PENDING)
             {
                 Timeout timeout(connector->timer, VRR_ENABLE_STATUS_TIMEOUT_INTERVAL_MS);
                 while(timeout.valid());
@@ -239,7 +235,7 @@ bool VrrEnablement::isDriverEnabled(void)
     NvU32 enableResult;
     MainLink *main = this->parent->connector->main;
     if (main->vrrRunEnablementStage(VRR_ENABLE_STAGE_DRIVER_ENABLE_CHECK,
-                                    &enableResult) == true)
+                                    &enableResult))
     {
         return true;
     }

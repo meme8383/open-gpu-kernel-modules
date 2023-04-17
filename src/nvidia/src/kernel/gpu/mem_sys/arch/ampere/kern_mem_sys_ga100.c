@@ -333,8 +333,8 @@ kmemsysIsPagePLCable_GA100
         return NV_TRUE;
 
      if (!((pMemorySystemConfig->ltsPerLtcCount != 4) || ((pMemorySystemConfig->ltcCount % 4) != 0) || (pMemorySystemConfig->ltcCount < 4)) &&
-         !(topAddr >= secureTopAddr) &&
-         !(physAddr >= (secureTopAddr << 16)) &&
+         topAddr < secureTopAddr &&
+         physAddr < (secureTopAddr << 16) &&
          !((physAddr < (bottomAddr << 16)) || (physAddr >= (topAddr << 16))))
      {
          NvU32 partition_id = (NvU32)((physAddr - (bottomAddr << 16)) / (partitionedMemorySize / 8));
