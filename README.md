@@ -182,7 +182,7 @@ ID, the second is the PCI Subsystem Vendor ID, and the third is the PCI
 Subsystem Device ID.
 
 | Product Name                                    | PCI ID         |
-| ----------------------------------------------- | -------------- |
+|-------------------------------------------------|----------------|
 | NVIDIA TITAN RTX                                | 1E02           |
 | NVIDIA GeForce RTX 2080 Ti                      | 1E04           |
 | NVIDIA GeForce RTX 2080 Ti                      | 1E07           |
