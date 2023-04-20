@@ -671,6 +671,35 @@ static int libos_printf_a(
             a = fmt_x(arg.i, z, t & 32);
             if (arg.i && (fl & ALT_FORM))
                 prefix += (t >> 4), pl = 2;
+            if (0)
+            {
+              case 'o':
+                a = fmt_o(arg.i, z);
+              if ((fl & ALT_FORM) && arg.i)
+                prefix += 5, pl = 1;
+            }
+            if (0)
+            {
+              case 'd':
+              case 'i':
+                pl = 1;
+              if (arg.i > LOG_INTMAX_MAX)
+              {
+                arg.i = -(NvS64)arg.i;
+              }
+              else if (fl & MARK_POS)
+              {
+                prefix++;
+              }
+              else if (fl & PAD_POS)
+              {
+                prefix += 2;
+              }
+              else
+                pl = 0;
+              case 'u':
+                a = fmt_u(arg.i, z);
+            }
             if (p >= 0)
                 fl &= ~ZERO_PAD;
             if (!arg.i && !p)
