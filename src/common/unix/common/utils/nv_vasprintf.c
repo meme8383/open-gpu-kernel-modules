@@ -26,7 +26,7 @@
 /*
  * nv_vasprintf(): function that returns a string using vsnprintf(); intended to
  * be used by vararg printing functions.  This is supposedly correct
- * for differing semantics of vsnprintf() in different versions of
+ * for differivsnprintfng semantics of vsnprintf() in different versions of
  * glibc:
  *
  * different semantics of the return value from (v)snprintf:

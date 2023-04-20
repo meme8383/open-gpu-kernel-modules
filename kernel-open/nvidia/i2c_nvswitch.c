@@ -286,16 +286,20 @@ nvswitch_i2c_add_adapter
     adapter->dev.parent = &pci_dev->dev;
     adapter->algo_data = (void *)i2c_algo_data;
 
-    nvswitch_os_snprintf(adapter->name,
-                         sizeof(adapter->name),
-                         "NVIDIA NVSwitch i2c adapter %u at %04x:%x:%02x.%u",
-                         port,
-                         NV_PCI_DOMAIN_NUMBER(pci_dev),
-                         NV_PCI_BUS_NUMBER(pci_dev),
-                         NV_PCI_SLOT_NUMBER(pci_dev),
-                         PCI_FUNC(pci_dev->devfn));
+    rc = nvswitch_os_snprintf(adapter->name,
+                              sizeof(adapter->name),
+                              "NVIDIA NVSwitch i2c adapter %u at %04x:%x:%02x.%u",
+                              port,
+                              NV_PCI_DOMAIN_NUMBER(pci_dev),
+                              NV_PCI_BUS_NUMBER(pci_dev),
+                              NV_PCI_SLOT_NUMBER(pci_dev),
+                              PCI_FUNC(pci_dev->devfn));
+    if ((rc < 0) || (rc >= sizeof(adapter->name)))
+    {
+        goto cleanup;
+    }
 
-  rc = i2c_add_adapter(adapter);
+    rc = i2c_add_adapter(adapter);
     if (rc < 0)
     {
         goto cleanup;
